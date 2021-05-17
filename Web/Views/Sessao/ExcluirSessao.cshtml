@@ -1,0 +1,23 @@
+﻿@model ProjetoCinema.Domain.Model.Sessao
+@{
+    ViewData["Title"] = "Excluir";
+    Layout = null;
+}
+
+<div class="modal-content">
+    <div class="modal-header">
+        <h4 class="modal-title">@ViewData["Title"]</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <p>
+            <h3>Deseja realmente excluir a sessão?</h3>
+        </p>
+    </div>
+    <div class="kt-portlet__foot">
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <input type="submit" class="btn btn-danger" id="btnExcluirSessao" value="Excluir" onclick="excluirSessao('@Model.IdSessao.ToString()');" />
+        </div>
+    </div>
+</div>

@@ -1,0 +1,91 @@
+﻿@model ProjetoCinema.Domain.Model.Sessao
+@{
+    ViewData["Title"] = Model.IdSessao == null ? "Cadastrar Sessão" : "Editar Sessão";
+    ViewData["IdSessao"] = Model.IdSessao == null ? "null" : string.Format("'{0}'", @Model.IdSessao.ToString());
+    Layout = null;
+}
+
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="filme">@ViewData["Title"]</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="form-validation">
+            @using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmSessao", name = "frmSessao" }))
+            {
+                <div class="form-group row">
+                    <div class="col-md-7">
+                        <label>@Html.LabelFor(model => model.IdFilme) <span class="text-danger">*</span></label>
+                        <select class="form-control input-default" id="IdFilme" name="IdFilme"></select>
+                    </div>
+
+                    <div class="col-md-5">
+                        <label>@Html.LabelFor(model => model.IdSala) <span class="text-danger">*</span></label>
+                        <select class="form-control input-default" id="IdSala" name="IdSala"></select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-4">
+                        <label>@Html.LabelFor(model => model.DataSessao) <span class="text-danger">*</span></label>
+                        @Html.TextBoxFor(model => model.DataSessao, new { id = "DataSessao", @class = "form-control input-default", placeholder = "Preencha o titulo!", @value = "" })
+                    </div>
+                    <div class="col-md-4">
+                        <label>@Html.LabelFor(model => model.HoraInicioSessao) <span class="text-danger">*</span></label>
+
+                        <div class="input-group clockpicker" data-placement="bottom" data-align="top" data-autoclose="true">
+                            @Html.TextBoxFor(model => model.HoraInicioSessao, new { id = "HoraInicioSessao", @class = "form-control input-default", minlength = "5", maxlength = "5", placeholder = "Preencha a hora inicio!" })
+                            <span class="input-group-append"><span class="input-group-text"><i class="fa fa-clock-o"></i></span></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label>@Html.LabelFor(model => model.HoraFimSessao) <span class="text-danger">*</span></label>
+                        @Html.TextBoxFor(model => model.HoraFimSessao, new { id = "HoraFimSessao", @class = "form-control input-default", disabled = "disabled" })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-4">
+                        <label>@Html.LabelFor(model => model.ValorIngresso) <span class="text-danger">*</span></label>
+                        @Html.TextBoxFor(model => model.ValorIngresso, new { id = "ValorIngresso", @class = "form-control input-default", placeholder = "Preencha o titulo!" })
+                    </div>
+                    <div class="col-md-4">
+                        <label>@Html.LabelFor(model => model.TipoAnimacao) <span class="text-danger">*</span></label>
+                        <select class="form-control input-default" id="TipoAnimacao" name="TipoAnimacao"></select>
+                    </div>
+                    <div class="col-md-4">
+                        <label>@Html.LabelFor(model => model.TipoAudio) <span class="text-danger">*</span></label>
+                        <select class="form-control input-default" id="TipoAudio" name="TipoAudio"></select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="ml-auto">
+                        <button type="button" class="btn btn-info" data-dismiss="modal">Fechar</button>
+                        <input type="submit" class="btn btn-info" value="Enviar" id="btnManterSessao" onclick="manterSessao(@ViewData["IdSessao"]);" />
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $('#DataSessao').mask('00/00/0000');
+        $('#HoraInicioSessao').mask('00:00');
+        $('#ValorIngresso').mask('#.##0,00', { reverse: true });
+
+        carregarListarSala('@Model.IdSala');
+        carregarListarFilmes('@Model.IdFilme');
+        carregarListarTipoAudio('@Model.TipoAudio');
+        carregarListarTipoAnimacao('@Model.TipoAnimacao');
+
+        $('.clockpicker').clockpicker({
+            donetext: 'Done',
+        }).find('input').change(function () {
+            console.log(this.value);
+        });
+    });
+</script>

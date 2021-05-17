@@ -1,0 +1,59 @@
+﻿@model IEnumerable<ProjetoCinema.Domain.Model.Sessao>
+
+<table class="table table-striped" id="dtSessao">
+    <thead>
+        <tr>
+            <th class="text-left" style="width: 7%">Sala</th>
+            <th class="text-left" style="width: 18%">Filme</th>
+            <th class="text-center" style="width: 10%">Data sessão</th>
+            <th class="text-center" style="width: 8%">Horário de inicio</th>
+            <th class="text-center" style="width: 8%">Horário final</th>
+            <th class="text-center" style="width: 10%">Valor do ingresso</th>
+            <th class="text-center" style="width: 10%">Tipo de animação</th>
+            <th class="text-center" style="width: 8%">Tipo áudio</th>
+            <th class="text-center" style="width: 10%;">Ação</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td class="text-left">
+                        @if (item.IdSala == "57A83949-34FC-4829-ACCF-5E0CE9697F06")
+                        {
+                            <span class="badge badge-success px-2"> @item.Nome</span>
+                        }
+                        else if (item.IdSala == "C4075C6D-3B5E-45E4-8E02-8FF4E2C04E60")
+                        {
+                            <span class="badge badge-dark px-2"> @item.Nome</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-danger px-2"> @item.Nome</span>
+                        }
+                    </td>
+                    <td class="text-Left">@item.Titulo</td>
+                    <td class="text-center"> @String.Format("{0:dd/MM/yyyy}", @item.DataSessao)</td>
+                    <td class="text-center">@item.HoraInicioSessao</td>
+                    <td class="text-center">@item.HoraFimSessao</td>
+                    <td class="text-center">@item.ValorIngresso</td>
+                    <td class="text-center">@item.TipoAnimacao</td>
+                    <td class="text-center">@item.TipoAudio</td>
+
+                    <td class="text-center">
+                        <div class="btn-group mr-2 mb-2">
+                            <button type="submit" class="btn btn-sm btn-info" data-toggle="tooltip" data-placement="top" title="Editar" id="btnEditarPlano" name="btnEditarPlano" onclick="modal(0, '@item.IdSessao.ToString()');">
+                                <i class="fa fa-fw fa-pencil"></i>
+                            </button>
+                            <button type="submit" class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="top" title="Excluir" id="btnExcluirSessao" name="btnExcluirSessao" onclick="modal(1, '@item.IdSessao.ToString()');">
+                                <i class="fa fa-fw fa-times"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

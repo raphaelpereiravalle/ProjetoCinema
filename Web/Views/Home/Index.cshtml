@@ -1,0 +1,81 @@
+﻿@model ProjetoCinema.Domain.Model.Home
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="content-body">
+    <div class="row page-titles mx-0">
+        <div class="col p-md-0">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
+                <li class="breadcrumb-item active"><a href="javascript:void(0)">Home</a></li>
+            </ol>
+        </div>
+    </div>
+    <!-- row -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-3 col-sm-6">
+                <div class="card gradient-1">
+                    <div class="card-body">
+                        <h3 class="card-title text-white">Total de Salas</h3>
+                        <div class="d-inline-block">
+                            <h1 class="text-white">3</h1>
+                            <p class="text-white mb-0">
+                                @DateTime.Now.ToString("dddd, dd MMMM yyyy")
+                            </p>
+                        </div>
+                        <span class="float-right display-5 opacity-5"><i class="fa fa-home"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6">
+                <div class="card gradient-3">
+                    <div class="card-body">
+                        <h3 class="card-title text-white">Quantidade Assentos: 224</h3>
+                        <div class="d-inline-block">
+                            <h5 class="text-white">Ativo: 220</h5>
+                            <h5 class="text-white">Manutenção: 4</h5>
+                            <p class="text-white mb-0">
+                                @DateTime.Now.ToString("dddd, dd MMMM yyyy")
+                            </p>
+                        </div>
+                        <span class="float-right display-5 opacity-5"><i class="fa fa-users"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="card gradient-2">
+                    <div class="card-body">
+                        <h3 class="card-title text-white">Filme cadastrados</h3>
+                        <div class="d-inline-block">
+                            <h2 class="text-white">@Model.totalFilmes</h2>
+                            <p class="text-white mb-0">
+                                @DateTime.Now.ToString("dddd, dd MMMM yyyy")
+                            </p>
+                        </div>
+                        <span class="float-right display-5 opacity-5"><i class="fa fa-money"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="card gradient-4">
+                    <div class="card-body">
+                        <h3 class="card-title text-white">Media do valor dos ingressos</h3>
+                        <div class="d-inline-block">
+                            <h2 class="text-white">
+                                @Model.mediaValorIngresso
+                            </h2>
+                            <p class="text-white mb-0">
+                                @DateTime.Now.ToString("dddd, dd MMMM yyyy")
+                            </p>
+                        </div>
+                        <span class="float-right display-5 opacity-5"><i class="fa fa-shopping-cart"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- #/ container -->
+</div>

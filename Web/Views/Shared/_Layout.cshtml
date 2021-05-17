@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>CinePicoca - Administrativo</title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="~/images/favicon.png">
+    <link href="~/lib/clockpicker/css/bootstrap-clockpicker.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link href="~/css/style.css" rel="stylesheet" />
+</head>
+<body>
+
+    <!--*******************
+        Preloader start
+    ********************-->
+    <div id="preloader">
+        <div class="loader">
+            <svg class="circular" viewBox="25 25 50 50">
+                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3" stroke-miterlimit="10" />
+            </svg>
+        </div>
+    </div>
+    <!--*******************
+        Preloader end
+    ********************-->
+
+    <div id="main-wrapper">
+
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+        <div class="nav-header">
+            <div class="brand-logo">
+                <a href="@Url.Action("Index","Home")">
+                    <b class="logo-abbr"><img src="../images/logo.png" alt=""> </b>
+                    <span class="logo-compact">ADMINISTRATIVA@*<img src="../images/logo-compact.jpg" alt="">*@</span>
+                    <span class="brand-title" style="color:#fff">
+                        <img src="../images/logo.png" alt="" width="21" height="21">
+                        ADMINISTRATIVA
+                    </span>
+                </a>
+            </div>
+        </div>
+        <!--**********************************
+            Nav header end
+        ***********************************-->
+        <!--**********************************
+            Header start
+        ***********************************-->
+        <div class="header">
+            <div class="header-content clearfix">
+                <div class="nav-control">
+                    <div class="hamburger">
+                        <span class="toggle-icon"><i class="icon-menu"></i></span>
+                    </div>
+                </div>
+               
+                <div class="header-right">
+                    <ul class="clearfix">
+                        <li class="icons dropdown d-none d-md-flex">
+                            <span>@User.Claims.Where(s => s.Type == "Name").Select(s => s.Value).First()</span>
+                        </li>
+                        <li class="icons dropdown">
+                            <div class="user-img c-pointer position-relative" data-toggle="dropdown">
+                                <span class="activity active"></span>
+                                <img src="../images/form-user.png" height="40" width="40" alt="">
+                            </div>
+                            <div class="drop-down dropdown-profile dropdown-menu">
+                                <div class="dropdown-content-body">
+                                    <ul>
+                                        <li><a href="@Url.Action("Logout","Account")"><i class="icon-key"></i> <span>Logout</span></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="nk-sidebar">
+            <div class="nk-nav-scroll">
+                <ul class="metismenu" id="menu">
+                    <li>
+                        <a href="@Url.Action("Index","Home")" aria-expanded="false">
+                            <i class="icon-speedometer menu-icon"></i><span class="nav-text">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Index","Filme")" aria-expanded="false">
+                            <i class="icon-film menu-icon"></i><span class="nav-text">Filme</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Index","Sala")" aria-expanded="false">
+                            <i class="icon-screen-desktop menu-icon"></i><span class="nav-text">Sala</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Index","Sessao")" aria-expanded="false">
+                            <i class="icon-notebook menu-icon"></i><span class="nav-text">Sessão</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        @RenderBody()
+    </div>
+    <div class="footer">
+        <div class="copyright">
+            <p>Copyright &copy; Designed & Developed by <a href="#">Raphael Pereira Valle</a> 2021 - @DateTime.Now.Year</p>
+        </div>
+    </div>
+
+    <script src="~/lib/common/common.min.js"></script>
+    <script src="~/js/custom.min.js"></script>
+    <script src="~/js/settings.js"></script>
+    <script src="~/js/gleek.js"></script>
+    <script src="~/js/styleSwitcher.js"></script>
+
+    <script src="~/lib/validation/jquery.validate.min.js"></script>
+    <script src="~/lib/validation/additional-methods.js"></script>
+    <script src="~/lib/bootstrap-notify-master/bootstrap-notify.js" asp-append-version="true"></script>
+    <script src="~/lib/clockpicker/js/bootstrap-clockpicker.min.js"></script>
+    <script src="~/lib/dataTables/datatables.js"></script>
+    <script src="~/lib/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+    <script src="~/lib/jquery-mask-plugin/dist/jquery.mask.min.js"></script>
+
+    <script src="~/js/site.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

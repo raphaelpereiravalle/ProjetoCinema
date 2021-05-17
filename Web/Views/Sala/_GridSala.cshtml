@@ -1,0 +1,35 @@
+﻿@model IEnumerable<ProjetoCinema.Domain.Model.Sala>
+
+<table class="table table-striped" id="dtSala">
+    <thead>
+        <tr>
+            <th class="text-left" >Nome da sala</th>
+            <th class="text-center">Quantidade de assento</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td class="text-left">
+                        @if (item.IdSala == "57A83949-34FC-4829-ACCF-5E0CE9697F06")
+                        {
+                            <span class="badge badge-success px-2">@item.Nome</span>
+                        }
+                        else if (item.IdSala == "C4075C6D-3B5E-45E4-8E02-8FF4E2C04E60")
+                        {
+                            <span class="badge badge-dark px-2">@item.Nome</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-danger px-2">@item.Nome</span>
+                        }
+                    </td>
+                    <td class="text-center">@item.QuantidadeAssento</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

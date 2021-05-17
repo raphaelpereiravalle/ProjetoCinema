@@ -1,0 +1,49 @@
+﻿@model IEnumerable<ProjetoCinema.Domain.Model.Sessao>
+
+<div class="content-body">
+    <div class="row page-titles mx-0">
+        <div class="col p-md-0">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
+                <li class="breadcrumb-item active"><a href="javascript:void(0)">Sessão</a></li>
+            </ol>
+        </div>
+    </div>
+    <!-- row -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <h4 class="card-title">Sessões</h4>
+                            </div>
+                            <div class="col text-right">
+                                <button type="button" class="btn btn-success text-right" id="btnCadastrarSessao" name="btnCadastrarSessao" data-toggle="tooltip" data-placement="top" title="Cadastrar" onclick="modal(0, null);">
+                                    Cadastrar
+                                </button>
+                            </div>
+                        </div>
+                        <div id="idGridSessao">
+                            @Html.Partial("_GridSessao", Model)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- #/ container -->
+</div>
+
+<!-- Top Modal Incluir/Editar-->
+<div class="modal fade" id="modal-sessao" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div id="modalSessao"></div>
+    </div>
+</div>
+<!-- END Top Modal -->
+
+@section Scripts{
+    <script src="~/js/sessao/sessao.js" asp-append-version="true"></script>
+}

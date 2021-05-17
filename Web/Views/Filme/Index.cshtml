@@ -1,0 +1,50 @@
+﻿@model IEnumerable<ProjetoCinema.Domain.Model.Filme>
+
+<div class="content-body">
+    <div class="row page-titles mx-0">
+        <div class="col p-md-0">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
+                <li class="breadcrumb-item active"><a href="javascript:void(0)">Filme</a></li>
+            </ol>
+        </div>
+    </div>
+    <!-- row -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <h4 class="card-title">Filmes</h4>
+                            </div>
+                            <div class="col text-right">
+                                <button type="button" class="btn btn-success text-right" id="btnCadastrarFilme" name="btnCadastrarFilme" data-toggle="tooltip" data-placement="top" title="Cadastrar" onclick="modal(0, null);">
+                                    Cadastrar
+                                </button>
+                            </div>
+                        </div>
+                        <div id="idGridFilme">
+                            @Html.Partial("_GridFilme", Model)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- #/ container -->
+</div>
+
+<!-- Top Modal Incluir/Editar-->
+<div class="modal fade" id="modal-filme" tabindex="-1" role="dialog" aria-labelledby="modal-block-small" aria-hidden="true" data-backdrop="static">
+    @* <div class="modal fade" id="modal-filme" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">  *@
+    <div class="modal-dialog modal-lg" role="document">
+        <div id="modalFilme"></div>
+    </div>
+</div>
+<!-- END Top Modal -->
+
+@section Scripts{
+    <script src="~/js/filme/filme.js" asp-append-version="true"></script>
+}

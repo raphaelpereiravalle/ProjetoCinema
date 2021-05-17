@@ -1,0 +1,37 @@
+﻿@model IEnumerable<ProjetoCinema.Domain.Model.Filme>
+
+<table class="table table-striped" id="dtFilme">
+    <thead>
+        <tr>
+            <th class="text-left" style="width: 12%">Titulo</th>
+            <th class="text-left" style="width: 63%">Descrição</th>
+            <th class="text-center" style="width: 5%;">Duração</th>
+            <th class="text-center" style="width: 10%;">Data do registro</th>
+            <th class="text-center" style="width: 10%;">Ação</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td class="text-left">@item.Titulo</td>
+                    <td class="text-left">@item.Descricao</td>
+                    <td class="text-center">@item.Duracao</td>
+                    <td class="text-center">@item.DataRegistro</td>
+                    <td class="text-center">
+                        <div class="btn-group mr-2 mb-2">
+                            <button type="submit" class="btn btn-sm btn-info" data-toggle="tooltip" data-placement="top" title="Editar" id="btnEditarFilme" name="btnEditarFilme" onclick="modal(0, '@item.IdFilme.ToString()');">
+                                <i class="fa fa-fw fa-pencil"></i>
+                            </button>
+                            <button type="submit" class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="top" title="Excluir" id="btnExcluirFilme" name="btnExcluirFilme" onclick="modal(1, '@item.IdFilme.ToString()');">
+                                <i class="fa fa-fw fa-times"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

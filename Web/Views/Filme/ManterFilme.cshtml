@@ -1,0 +1,101 @@
+﻿@model ProjetoCinema.Domain.Model.Filme
+@{
+    ViewData["Title"] = Model.IdFilme == null ? "Cadastrar Filme" : "Editar Filme";
+    ViewData["IdFilme"] = Model.IdFilme == null ? "null" : string.Format("'{0}'", @Model.IdFilme.ToString());
+    Layout = null;
+}
+<div class="modal-content">
+    <div class="modal-header">
+        <h4 class="modal-title" id="filme">@ViewData["Title"]</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="form-validation">
+            @using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmFilme", name = "frmFilme" }))
+            {
+                <div class="form-group row">
+                    <div class="col-md-8">
+                        <label for="Titulo">@Html.LabelFor(model => model.Titulo) <span class="text-danger">*</span></label>
+                        @Html.TextBoxFor(model => model.Titulo, new { id = "Titulo", @class = "form-control input-default", placeholder = "Preencha o titulo!" })
+                    </div>
+                    <div class="col-md-4">
+                        <label>@Html.LabelFor(model => model.Duracao) <span class="text-danger">*</span></label>
+                        <div class="input-group clockpicker" data-placement="bottom" data-align="top" data-autoclose="true">
+                            @Html.TextBoxFor(model => model.Duracao, new { id = "Duracao", @class = "form-control input-default", placeholder = "Preencha a duração!" })
+                            <span class="input-group-append"><span class="input-group-text"><i class="fa fa-clock-o"></i></span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Duracao">@Html.LabelFor(model => model.Duracao) <span class="text-danger">*</span></label>
+                    <div>
+                        @Html.TextAreaFor(model => model.Descricao, new { id = "Descricao", name = "Descricao", @class = "form-control", @rows = 6, placeholder = "Preencha a descrição do filme" })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-6 text-left">
+                        <label>@Html.LabelFor(model => model.Imagem)</label>
+                        <div class="basic-form">
+                            <div class="form-group">
+                                <input type="file" id="Imagem" name="Imagem" class="form-control-file" accept="image/*" value="@Model.Imagem">
+                            </div>
+
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(@Model.Imagem))
+                    {
+                        <div class="col-md-6 text-right">
+                            <figure class="figure">
+                                <img src="~/images/filme/@Model.Imagem" width="180" height="265" class="img-thumbnail" alt="Poste" />
+                            </figure>
+                        </div>
+                    }
+                </div>
+                @*<div class="form-group">
+                    <label>@Html.LabelFor(model => model.Ativo)</label>
+                    <div class="form-check">
+                        @Html.CheckBoxFor(model => model.Ativo, new { id = "Ativo", name = "Ativo", @class = "form-check-input", @type = "checkbox" })
+                        <label class="form-check-label"><span id="validar"></span></label>
+                    </div>
+                </div>*@
+                <div class="modal-footer" style="">
+                    <div class="ml-auto">
+                        <button type="button" class="btn btn-info" data-dismiss="modal">Fechar</button>
+                        <input type="submit" class="btn btn-info" value="Enviar" id="btnManterFilme" onclick="manterFilme(@ViewData["IdFilme"]);" />
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        "use strict"
+
+        $('#Duracao').mask('00:00');
+
+        $('#Ativo').attr('checked', 'checked');
+        $('#validar').html('Filme ativo');
+
+        $('#Ativo').click(function (e) {
+            var validar = $("#Ativo").is(':checked');
+            if (validar) {
+                $('#validar').html('Filme ativo');
+                $('#validar').removeClass('text-danger');
+            } else {
+                $('#validar').html('Filme desativo');
+                $('#validar').addClass('text-danger');
+            }
+        });
+
+        $('.clockpicker').clockpicker({
+            donetext: 'Done',
+        }).find('input').change(function () {
+            console.log(this.value);
+        });
+    });
+</script>
