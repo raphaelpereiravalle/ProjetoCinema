@@ -10,7 +10,7 @@ Sistema para gerencinar filmes, salas e sessões de um cinema.
 * Autenticação e autorização (JWT e Cookies)
 * Layer API implementation
 * Swagger (API Development)
-* Sql Server 2014 Community
+* Sql Server 2014 Community ENG
 
 ## Front End:
 * Bootstrop
@@ -110,7 +110,13 @@ Sistema para gerencinar filmes, salas e sessões de um cinema.
   <img src="assets/img/propriedade.PNG" alt="Propriedade" />
 </p>
 
-* Execute o Build Solution. Depois, clique em Start para executar o projeto.
+* Acesse o arquivo appsettings na camadas 2 - Services -> WebApi e configure a conexão com o banco de dados.
+
+<p align="center">
+  <img src="assets/img/conexao.PNG" alt="Conexão" />
+</p>
+
+* Execute o Build Solution. Depois clique em Start para executar o projeto.
 
 <p align="center">
   <img src="assets/img/start.PNG" alt="Start" />
