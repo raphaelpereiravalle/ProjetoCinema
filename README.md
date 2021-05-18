@@ -115,6 +115,7 @@ Sistema para gerencinar filmes, salas e sessões de um cinema.
 <p align="center">
   <img src="assets/img/start.PNG" alt="Start" />
 </p>
+
 ## Author
 
 The ProjetoCinema was developed by Raphael Pereira Valle.
