@@ -86,7 +86,7 @@ Sistema para gerencinar filmes, salas e sessões de um cinema.
 	* Download;
 	
 <p align="center">
-  <img src="assets/img/clone.PNG" alt="Clone github" />
+  <img src="assets/img/clone.PNG" alt="Clone GitHub" />
 </p>
 
 * Conecte o Sql Server para restaurar o banco de dados, use a opção de Windows Authentication para autenticação do banco dados e inclua o Server Name. Após conectar selecione, o 
