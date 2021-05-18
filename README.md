@@ -1,4 +1,4 @@
-# Projeto Cine Pipona  <img src="assets/img/favicon.PNG" alt="Pipoca" />
+# Projeto Cine Pipoca  <img src="assets/img/logo.PNG" alt="Pipoca" />
 Sistema para gerencinar filmes, salas e sessões de um cinema.
 
 ## Patterns/Tecnologias:
@@ -16,11 +16,12 @@ Sistema para gerencinar filmes, salas e sessões de um cinema.
 * Bootstrop
 * Ajax
 * Jquery
-* Bibliotecas para layout e valização de dados.
+* Bibliotecas para layout e validação de dados.
 
 ## Telas
-Usuário: administrador@cine.com
-Senha: 123456
+*Usuário: administrador@cine.com
+*Senha: 123456
+
 <p align="center">
   <img src="assets/img/login_swagger.PNG" alt="Login/Swagger" />
 </p>
@@ -46,7 +47,6 @@ Senha: 123456
 </p>
 
 ## MERScript do banco de dados
-
 <p align="center">
   <img src="assets/img/diagrama.PNG" alt="Diagrama"/>
 </p>
@@ -67,20 +67,41 @@ Senha: 123456
 	* Classe de comunicação do API 
 * 2 - Services
 	* API
+	* Segurança com o JWT
 * 3 - Core
 	* Entidades de domínio, interfaces e segurança;
-	* Serviços e intefases.
+	* Serviços e intefaces.
 * 4 - Infrastructure
 	* Repository Pattern: Repositórios EF Core e Dapper para a persistência de dados do banco de dados;
 	* Entity Framework Context;
 * 5 - Test
 	* Testes
-## Ambiente para tester o projeto
+	
+## Ambiente para testar o projeto
 
-*Efetue o clone do repositório para o Visual Studio ou Visual Code
-*Restaure o banco de dados executando o <a href="https://github.com/raphaelpereiravalle/ProjetoCinema/tree/master/BancoDeDados">script</a> foi usado a opção de Windows Authentication para autencicação do banco dados.
-*É importante configurar o *Startup Project* (lembrado que pode se customizada) selecione a opção Start na coluna Action
+* Efetue o clone clicando no botão Code e selecione uma das opções: 
+	* Linha de comando do git:
+		* git clone https://github.com/raphaelpereiravalle/ProjetoCinema.git
+	* Clone o repositório diretamento para o Visual Studio ou Visual Code
+	* Donwload
+	
+<p align="center">
+  <img src="assets/img/clone.PNG" alt="Clone github" />
+</p>
 
+* Conecta o Sql Server para restaurar o banco de dados, use a opção de Windows Authentication para autenticação do banco dados e inclua o Server Name, após conectar selecione o 
+<a href="https://github.com/raphaelpereiravalle/ProjetoCinema/tree/master/BancoDeDados">arquivo</a> e execute-o na New query. 
+
+<p align="center">
+  <img src="assets/img/conectar.PNG" alt="Conectar" />
+</p>
+
+<p align="center">
+  <img src="assets/img/new_query.PNG" alt="New_query" />
+</p>
+
+* É importante configurar o *Startup Project* do projeto, clique com o botão direto em Solution clique em Properties e selecione a opção Start na coluna Action (Lembrando que essa opção pode ser customizada).
+ 
 <p align="center">
   <img src="assets/img/solucao.PNG" alt="Solução" />
 </p>
@@ -88,6 +109,8 @@ Senha: 123456
 <p align="center">
   <img src="assets/img/propriedade.PNG" alt="Propriedade" />
 </p>
+
+* Clique em Start para executar o projeto
 
 ## Author
 
