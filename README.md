@@ -1,4 +1,4 @@
-# Projeto Cine Pipoca  <img src="assets/img/logo.PNG" alt="Pipoca" />
+# Projeto Cine Pipoca
 Sistema para gerencinar filmes, salas e sessões de um cinema.
 
 ## Patterns/Tecnologias:
@@ -12,15 +12,15 @@ Sistema para gerencinar filmes, salas e sessões de um cinema.
 * Swagger (API Development)
 * Sql Server 2014 Community
 
-## Front End
+## Front End:
 * Bootstrop
 * Ajax
 * Jquery
 * Bibliotecas para layout e validação de dados
 
 ## Telas
-*Usuário: administrador@cine.com
-*Senha: 123456
+* Usuário: administrador@cine.com
+* Senha: 123456
 
 <p align="center">
   <img src="assets/img/login_swagger.PNG" alt="Login/Swagger" />
