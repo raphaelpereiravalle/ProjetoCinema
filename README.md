@@ -83,13 +83,13 @@ Sistema para gerencinar filmes, salas e sessões de um cinema.
 	* Linha de comando do git
 		* git clone https://github.com/raphaelpereiravalle/ProjetoCinema.git
 	* Clone o repositório diretamento para o Visual Studio ou Visual Code;
-	* Donwload;
+	* Download;
 	
 <p align="center">
   <img src="assets/img/clone.PNG" alt="Clone github" />
 </p>
 
-* Conecta o Sql Server para restaurar o banco de dados, use a opção de Windows Authentication para autenticação do banco dados e inclua o Server Name, após conectar selecione o 
+* Conecte o Sql Server para restaurar o banco de dados, use a opção de Windows Authentication para autenticação do banco dados e inclua o Server Name. Após conectar selecione, o 
 <a href="https://github.com/raphaelpereiravalle/ProjetoCinema/tree/master/BancoDeDados">arquivo</a> e execute-o na New query. 
 
 <p align="center">
@@ -100,7 +100,7 @@ Sistema para gerencinar filmes, salas e sessões de um cinema.
   <img src="assets/img/new_query.PNG" alt="New_query" />
 </p>
 
-* É importante configurar o *Startup Project* do projeto, clique com o botão direto em Solution clique em Properties e selecione a opção Start na coluna Action (Lembrando que essa opção pode ser customizada).
+* É importante configurar o *Startup Project* do projeto. Para isso, clique com o botão direto em Solution, clique em Properties e selecione a opção Start na coluna Action (Lembrando que essa opção pode ser customizada).
  
 <p align="center">
   <img src="assets/img/solucao.PNG" alt="Solução" />
@@ -110,7 +110,7 @@ Sistema para gerencinar filmes, salas e sessões de um cinema.
   <img src="assets/img/propriedade.PNG" alt="Propriedade" />
 </p>
 
-* Exercute o Build Solution e depois clique em Start para executar o projeto.
+* Execute o Build Solution. Depois, clique em Start para executar o projeto.
 
 <p align="center">
   <img src="assets/img/start.PNG" alt="Start" />
