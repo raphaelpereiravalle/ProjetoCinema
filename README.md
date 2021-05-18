@@ -16,7 +16,7 @@ Sistema para gerencinar filmes, salas e sessões de um cinema.
 * Bootstrop
 * Ajax
 * Jquery
-* Bibliotecas para layout e validação de dados.
+* Bibliotecas para layout e validação de dados
 
 ## Telas
 *Usuário: administrador@cine.com
@@ -62,28 +62,28 @@ Sistema para gerencinar filmes, salas e sessões de um cinema.
 
 * 1 - Presentation
 	* Camada de apresentação com CRUD;
-	* Plugins CSS e JavaScript
-	* MVC
-	* Classe de comunicação do API 
+	* Plugins CSS e JavaScript;
+	* MVC;
+	* Classe de comunicação do API. 
 * 2 - Services
-	* API
-	* Segurança com o JWT
+	* API;
+	* Segurança com o JWT.
 * 3 - Core
 	* Entidades de domínio, interfaces e segurança;
 	* Serviços e intefaces.
 * 4 - Infrastructure
 	* Repository Pattern: Repositórios EF Core e Dapper para a persistência de dados do banco de dados;
-	* Entity Framework Context;
+	* Entity Framework Context.
 * 5 - Test
 	* Testes
 	
 ## Ambiente para testar o projeto
 
 * Efetue o clone clicando no botão Code e selecione uma das opções: 
-	* Linha de comando do git:
+	* Linha de comando do git
 		* git clone https://github.com/raphaelpereiravalle/ProjetoCinema.git
-	* Clone o repositório diretamento para o Visual Studio ou Visual Code
-	* Donwload
+	* Clone o repositório diretamento para o Visual Studio ou Visual Code;
+	* Donwload;
 	
 <p align="center">
   <img src="assets/img/clone.PNG" alt="Clone github" />
@@ -110,8 +110,11 @@ Sistema para gerencinar filmes, salas e sessões de um cinema.
   <img src="assets/img/propriedade.PNG" alt="Propriedade" />
 </p>
 
-* Clique em Start para executar o projeto
+* Exercute o Build Solution e depois clique em Start para executar o projeto.
 
+<p align="center">
+  <img src="assets/img/start.PNG" alt="Start" />
+</p>
 ## Author
 
 The ProjetoCinema was developed by Raphael Pereira Valle.
