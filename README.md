@@ -10,7 +10,7 @@ Sistema para gerencinar filmes, salas e sessões de um cinema.
 * Autenticação e autorização (JWT e Cookies)
 * Layer API implementation
 * Swagger (API Development)
-* Sql Server 2019
+* Sql Server 2014 Community
 
 ## Front End
 * Bootstrop
@@ -51,8 +51,44 @@ Senha: 123456
   <img src="assets/img/diagrama.PNG" alt="Diagrama"/>
 </p>
 
-<a href="https://github.com/raphaelpereiravalle/ProjetoCinema/tree/master/BancoDeDados">[Script banco de dados]</a>
+## Script banco de dados
+<a href="https://github.com/raphaelpereiravalle/ProjetoCinema/tree/master/BancoDeDados">Arquivo</a>
+
+## Estrutura
+
+<p align="center">
+  <img src="assets/img/estrutura.PNG" alt="Estrutura"/>
+</p>
+
+* 1 - Presentation
+	* Camada de apresentação com CRUD;
+	* Plugins CSS e JavaScript
+	* MVC
+	* Classe de comunicação do API 
+* 2 - Services
+	* API
+* 3 - Core
+	* Entidades de domínio, interfaces e segurança;
+	* Serviços e intefases.
+* 4 - Infrastructure
+	* Repository Pattern: Repositórios EF Core e Dapper para a persistência de dados do banco de dados;
+	* Entity Framework Context;
+* 5 - Test
+	* Testes
+## Ambiente para tester o projeto
+
+*Efetue o clone do repositório para o Visual Studio ou Visual Code
+*Restaure o banco de dados executando o <a href="https://github.com/raphaelpereiravalle/ProjetoCinema/tree/master/BancoDeDados">script</a> foi usado a opção de Windows Authentication para autencicação do banco dados.
+*É importante configurar o *Startup Project* (lembrado que pode se customizada) selecione a opção Start na coluna Action
+
+<p align="center">
+  <img src="assets/img/solucao.PNG" alt="Solução" />
+</p>
+
+<p align="center">
+  <img src="assets/img/propriedade.PNG" alt="Propriedade" />
+</p>
 
 ## Author
 
-The ApiNetCoreMongoDB was developed by [Raphael Pereira Valle].
+The ProjetoCinema was developed by Raphael Pereira Valle.
