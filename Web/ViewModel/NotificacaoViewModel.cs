@@ -1,8 +1,12 @@
-﻿namespace ProjetoCinema.Domain.Model
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace ProjetoCinema.Web.ViewModel
 {
-    public class Notificacao
+    public class NotificacaoViewModel
     {
-        public Notificacao(bool erro, string msg, string resultado)
+        public NotificacaoViewModel(bool erro, string msg, string resultado)
         {
             Erro = erro;
             Msg = msg;

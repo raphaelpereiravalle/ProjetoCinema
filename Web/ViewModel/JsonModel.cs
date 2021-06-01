@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 
-namespace ProjetoCinema.Domain.Model
+namespace ProjetoCinema.Web.ViewModel
 {
     public class JsonModel
     {

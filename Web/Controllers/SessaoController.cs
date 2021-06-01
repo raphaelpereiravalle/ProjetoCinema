@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using ProjetoCinema.Domain.Model;
 using ProjetoCinema.Web.Client;
+using ProjetoCinema.Web.ViewModel;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,7 +26,7 @@ namespace Web.Controllers
             {
                 ClientService client = new ClientService();
 
-                DadosSessao resultado = await client.GetAsync<DadosSessao>(_config["UrlApi"] + "/Sessao/listar-sessao/",
+                DadosSessaoViewModel resultado = await client.GetAsync<DadosSessaoViewModel>(_config["UrlApi"] + "/Sessao/listar-sessao/",
                 User.Claims.Where(s => s.Type == "AccessToken").Select(s => s.Value).First(), null);
 
                 return View(resultado.Resultado);
@@ -44,7 +44,7 @@ namespace Web.Controllers
             {
                 if (string.IsNullOrEmpty(cod))
                 {
-                    Sessao Sessao = new Sessao();
+                    SessaoViewModel Sessao = new SessaoViewModel();
 
                     return View(Sessao);
                 }
@@ -52,7 +52,7 @@ namespace Web.Controllers
                 {
                     ClientService client = new ClientService();
 
-                    Sessao resultado = await client.GetAsync<Sessao>(_config["UrlApi"] + "/Sessao/sessao?IdSessao="
+                    SessaoViewModel resultado = await client.GetAsync<SessaoViewModel>(_config["UrlApi"] + "/Sessao/sessao?IdSessao="
                         , User.Claims.Where(s => s.Type == "AccessToken").Select(s => s.Value).First(), cod);
 
                     return View(resultado);
@@ -65,66 +65,52 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> IncluirSessao(Sessao sessao)
+        public async Task<JsonResult> IncluirSessao(SessaoViewModel sessao)
         {
             try
             {
-                try
+                ClientService client = new ClientService();
+
+                sessao.IdUsuario = User.Claims.Where(s => s.Type == "ID").Select(s => s.Value).First();
+
+                NotificacaoViewModel resultado = await client.PostAsync<SessaoViewModel>(_config["UrlApi"] + "/Sessao/Sessao/"
+                    , User.Claims.Where(s => s.Type == "AccessToken").Select(s => s.Value).First(), sessao);
+
+                if (resultado.Erro)
                 {
-                    ClientService client = new ClientService();
-
-                    sessao.IdUsuario = User.Claims.Where(s => s.Type == "ID").Select(s => s.Value).First();
-
-                    Notificacao resultado = await client.PostAsync<Sessao>(_config["UrlApi"] + "/Sessao/Sessao/"
-                        , User.Claims.Where(s => s.Type == "AccessToken").Select(s => s.Value).First(), sessao);
-
-                    if (resultado.Erro)
-                    {
-                        return Json(new JsonModel() { success = false, result = resultado.Resultado, message = resultado.Msg });
-                    }
-
-                    return Json(new JsonModel() { success = true, result = resultado, message = resultado.Msg });
+                    return Json(new JsonModel() { success = false, result = resultado.Resultado, message = resultado.Msg });
                 }
-                catch (Exception ex)
-                {
-                    return Json(new JsonModel() { success = false, message = ex.Message });
-                }
+
+                return Json(new JsonModel() { success = true, result = resultado, message = resultado.Msg });
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                return Json(new JsonModel() { success = false, message = ex.Message });
             }
         }
 
         [HttpPut]
-        public async Task<JsonResult> EditarSessao(Sessao sessao)
+        public async Task<JsonResult> EditarSessao(SessaoViewModel sessao)
         {
             try
             {
-                try
+                ClientService client = new ClientService();
+
+                sessao.IdUsuario = User.Claims.Where(s => s.Type == "ID").Select(s => s.Value).First();
+
+                NotificacaoViewModel resultado = await client.PutAsync<SessaoViewModel>(_config["UrlApi"] + "/Sessao/sessao/"
+                    , User.Claims.Where(s => s.Type == "AccessToken").Select(s => s.Value).First(), sessao);
+
+                if (resultado.Erro)
                 {
-                    ClientService client = new ClientService();
-
-                    sessao.IdUsuario = User.Claims.Where(s => s.Type == "ID").Select(s => s.Value).First();
-
-                    Notificacao resultado = await client.PutAsync<Sessao>(_config["UrlApi"] + "/Sessao/sessao/",
-                    User.Claims.Where(s => s.Type == "AccessToken").Select(s => s.Value).First(), sessao);
-
-                    if (resultado.Erro)
-                    {
-                        return Json(new JsonModel() { success = false, result = resultado.Resultado, message = resultado.Msg });
-                    }
-
-                    return Json(new JsonModel() { success = true, result = resultado, message = resultado.Msg });
+                    return Json(new JsonModel() { success = false, result = resultado.Resultado, message = resultado.Msg });
                 }
-                catch (Exception e)
-                {
-                    return Json(new JsonModel() { success = false, message = e.Message });
-                }
+
+                return Json(new JsonModel() { success = true, result = resultado, message = resultado.Msg });
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                throw new Exception(ex.Message);
+                return Json(new JsonModel() { success = false, message = e.Message });
             }
         }
 
@@ -135,7 +121,7 @@ namespace Web.Controllers
             {
                 ClientService client = new ClientService();
 
-                Sessao resultado = await client.GetAsync<Sessao>(_config["UrlApi"] + "/Sessao/sessao?IdSessao="
+                SessaoViewModel resultado = await client.GetAsync<SessaoViewModel>(_config["UrlApi"] + "/Sessao/sessao?IdSessao="
                     , User.Claims.Where(s => s.Type == "AccessToken").Select(s => s.Value).First(), cod);
 
                 return View(resultado);
@@ -151,28 +137,21 @@ namespace Web.Controllers
         {
             try
             {
-                try
+                ClientService client = new ClientService();
+
+                NotificacaoViewModel resultado = await client.DeleteAsync<NotificacaoViewModel>(_config["UrlApi"] + "/Sessao/sessao/?IdSessao="
+                    , User.Claims.Where(s => s.Type == "AccessToken").Select(s => s.Value).First(), cod);
+
+                if (resultado.Erro)
                 {
-                    ClientService client = new ClientService();
-
-                    Notificacao resultado = await client.DeleteAsync<Notificacao>(_config["UrlApi"] + "/Sessao/sessao/?IdSessao="
-                        , User.Claims.Where(s => s.Type == "AccessToken").Select(s => s.Value).First(), cod);
-
-                    if (resultado.Erro)
-                    {
-                        return Json(new JsonModel() { success = false, result = resultado.Resultado, message = resultado.Msg });
-                    }
-
-                    return Json(new JsonModel() { success = true, result = resultado, message = resultado.Msg });
+                    return Json(new JsonModel() { success = false, result = resultado.Resultado, message = resultado.Msg });
                 }
-                catch (Exception ex)
-                {
-                    return Json(new JsonModel() { success = false, message = ex.Message });
-                }
+
+                return Json(new JsonModel() { success = true, result = resultado, message = resultado.Msg });
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                throw new Exception(Ex.Message);
+                return Json(new JsonModel() { success = false, message = ex.Message });
             }
         }
 
@@ -183,7 +162,7 @@ namespace Web.Controllers
             {
                 ClientService client = new ClientService();
 
-                DadosSessao resultado = await client.GetAsync<DadosSessao>(_config["UrlApi"] + "/Sessao/listar-sessao/"
+                DadosSessaoViewModel resultado = await client.GetAsync<DadosSessaoViewModel>(_config["UrlApi"] + "/Sessao/listar-sessao/"
                     , User.Claims.Where(s => s.Type == "AccessToken").Select(s => s.Value).First(), null);
 
                 return PartialView("_GridSessao", resultado.Resultado);

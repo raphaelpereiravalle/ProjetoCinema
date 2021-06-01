@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 namespace ProjetoCinema.WebApi.Controllers
 {
     [Authorize("Bearer")]
-    //[AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class SessaoController : ControllerBase

@@ -27,7 +27,7 @@ namespace Core.UnitTests
         {
             _repositoryMock = new Mock<IFilmeRepository>();
             _filmeMock = new Mock<Filme>();
-            _service = new FilmeAppService(_repositoryMock.Object);
+           // _service = new FilmeAppService(_repositoryMock.Object);
 
             _serviceMock = new Mock<IFilmeAppService>();
             _controller = new FilmeController(_serviceMock.Object);
@@ -74,7 +74,6 @@ namespace Core.UnitTests
         [Fact]
         public void GetById_ShouldCallService_AndReturn404_WhenPersonNotFound()
         {
-
             FilmeRepository filmeRepository = new FilmeRepository(null);
 
             _serviceMock.Setup(_ => _.BuscarFilme("4ac4219e-6a88-4045-8627-c482b1c664fd")).Returns(value: null);

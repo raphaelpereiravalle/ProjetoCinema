@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using ProjetoCinema.Domain.Model;
 using ProjetoCinema.Web.Client;
+using ProjetoCinema.Web.ViewModel;
 using System;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,7 +25,7 @@ namespace Web.Controllers
             {
                 ClientService client = new ClientService();
 
-                Home painel = new Home();
+                HomeViewModel painel = new HomeViewModel();
 
                 // Painel com a contagem de filmes 
                 painel.totalFilmes = await client.GetAsync<int>(_config["UrlApi"] + "/Filme/contador",

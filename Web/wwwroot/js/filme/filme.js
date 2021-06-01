@@ -92,10 +92,9 @@ function manterFilme(cod) {
             }
         },
         submitHandler: function (form) {
-           // var _arquivo = $('#Imagem')[0].files[0];
+
             var _arquivo = document.getElementById('Imagem').files[0];
 
-            //formData.append("Imagens1", document.getElementById('input-file-now1').files[0]);
             var formData = new FormData();
             formData.append('IdFilme', cod);
             formData.append('Titulo', $('#Titulo').val());

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using ProjetoCinema.Domain.Model;
 using ProjetoCinema.Web.Client;
+using ProjetoCinema.Web.ViewModel;
 using System;
 using System.IO;
 using System.Linq;
@@ -28,8 +29,8 @@ namespace ProjetoCinema.Web.Controllers
             {
                 ClientService client = new ClientService();
 
-                DadosFilme resultado = await client.GetAsync<DadosFilme>(_config["UrlApi"] + "/Filme/filme-listar/",
-                    User.Claims.Where(s => s.Type == "AccessToken").Select(s => s.Value).First(), null);
+                DadosFilmeViewModel resultado = await client.GetAsync<DadosFilmeViewModel>(_config["UrlApi"] + "/Filme/filme-listar/"
+                    , User.Claims.Where(s => s.Type == "AccessToken").Select(s => s.Value).First(), null);
 
                 return View(resultado.Resultado);
             }
@@ -46,7 +47,7 @@ namespace ProjetoCinema.Web.Controllers
             {
                 if (string.IsNullOrEmpty(cod))
                 {
-                    Filme filme = new Filme();
+                    FilmeViewModel filme = new FilmeViewModel();
 
                     return View(filme);
                 }
@@ -54,7 +55,7 @@ namespace ProjetoCinema.Web.Controllers
                 {
                     ClientService client = new ClientService();
 
-                    Filme resultado = await client.GetAsync<Filme>(_config["UrlApi"] + "/Filme/filme?IdFilme="
+                    FilmeViewModel resultado = await client.GetAsync<FilmeViewModel>(_config["UrlApi"] + "/Filme/filme?IdFilme="
                         , User.Claims.Where(s => s.Type == "AccessToken").Select(s => s.Value).First(), cod);
 
                     return View(resultado);
@@ -67,7 +68,7 @@ namespace ProjetoCinema.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> IncluirFilme(Filme filme)
+        public async Task<JsonResult> IncluirFilme(FilmeViewModel filme)
         {
             try
             {
@@ -77,7 +78,7 @@ namespace ProjetoCinema.Web.Controllers
 
                     if (filme.Arquivo != null)
                     {
-                        Filme foto = SalvarImagem(filme.Arquivo);
+                        FilmeViewModel foto = SalvarImagem(filme.Arquivo);
 
                         filme.Imagem = foto.Imagem;
                         filme.Caminho = foto.Caminho;
@@ -86,8 +87,8 @@ namespace ProjetoCinema.Web.Controllers
                     filme.IdUsuario = User.Claims.Where(s => s.Type == "ID").Select(s => s.Value).First();
                     filme.Arquivo = null;
 
-                    Notificacao resultado = await client.PostAsync<Filme>(_config["UrlApi"] + "/Filme/filme/",
-                        User.Claims.Where(s => s.Type == "AccessToken").Select(s => s.Value).First(), filme);
+                    NotificacaoViewModel resultado = await client.PostAsync<FilmeViewModel>(_config["UrlApi"] + "/Filme/filme/"
+                        , User.Claims.Where(s => s.Type == "AccessToken").Select(s => s.Value).First(), filme);
 
                     if (resultado.Erro)
                     {
@@ -108,43 +109,36 @@ namespace ProjetoCinema.Web.Controllers
         }
 
         [HttpPut]
-        public async Task<JsonResult> EditarFilme(Filme filme)
+        public async Task<JsonResult> EditarFilme(FilmeViewModel filme)
         {
             try
             {
-                try
+                ClientService client = new ClientService();
+
+                if (filme.Arquivo != null)
                 {
-                    ClientService client = new ClientService();
+                    FilmeViewModel foto = SalvarImagem(filme.Arquivo);
 
-                    if (filme.Arquivo != null)
-                    {
-                        Filme foto = SalvarImagem(filme.Arquivo);
-
-                        filme.Imagem = foto.Imagem.ToString();
-                        filme.Caminho = foto.Caminho.ToString();
-                    }
-
-                    filme.IdUsuario = User.Claims.Where(s => s.Type == "ID").Select(s => s.Value).First();
-                    filme.Arquivo = null;
-
-                    Notificacao resultado = await client.PutAsync<Filme>(_config["UrlApi"] + "/Filme/filme/",
-                    User.Claims.Where(s => s.Type == "AccessToken").Select(s => s.Value).First(), filme);
-
-                    if (resultado.Erro)
-                    {
-                        return Json(new JsonModel() { success = false, result = resultado.Resultado, message = resultado.Msg });
-                    }
-
-                    return Json(new JsonModel() { success = true, result = resultado, message = resultado.Msg });
+                    filme.Imagem = foto.Imagem.ToString();
+                    filme.Caminho = foto.Caminho.ToString();
                 }
-                catch (Exception e)
+
+                filme.IdUsuario = User.Claims.Where(s => s.Type == "ID").Select(s => s.Value).First();
+                filme.Arquivo = null;
+
+                NotificacaoViewModel resultado = await client.PutAsync<FilmeViewModel>(_config["UrlApi"] + "/Filme/filme/"
+                    , User.Claims.Where(s => s.Type == "AccessToken").Select(s => s.Value).First(), filme);
+
+                if (resultado.Erro)
                 {
-                    return Json(new JsonModel() { success = false, message = e.Message });
+                    return Json(new JsonModel() { success = false, result = resultado.Resultado, message = resultado.Msg });
                 }
+
+                return Json(new JsonModel() { success = true, result = resultado, message = resultado.Msg });
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                throw new Exception(ex.Message);
+                return Json(new JsonModel() { success = false, message = e.Message });
             }
         }
 
@@ -155,7 +149,7 @@ namespace ProjetoCinema.Web.Controllers
             {
                 ClientService client = new ClientService();
 
-                Filme resultado = await client.GetAsync<Filme>(_config["UrlApi"] + "/Filme/filme?IdFilme="
+                FilmeViewModel resultado = await client.GetAsync<FilmeViewModel>(_config["UrlApi"] + "/Filme/filme?IdFilme="
                     , User.Claims.Where(s => s.Type == "AccessToken").Select(s => s.Value).First(), cod);
 
                 return View(resultado);
@@ -171,29 +165,23 @@ namespace ProjetoCinema.Web.Controllers
         {
             try
             {
-                try
+                ClientService client = new ClientService();
+
+                NotificacaoViewModel resultado = await client.DeleteAsync<NotificacaoViewModel>(_config["UrlApi"] + "/Filme/filme/?IdFilme="
+                    , User.Claims.Where(s => s.Type == "AccessToken").Select(s => s.Value).First(), cod);
+
+                if (resultado.Erro)
                 {
-                    ClientService client = new ClientService();
-
-                    Notificacao resultado = await client.DeleteAsync<Notificacao>(_config["UrlApi"] + "/Filme/filme/?IdFilme="
-                        , User.Claims.Where(s => s.Type == "AccessToken").Select(s => s.Value).First(), cod);
-
-                    if (resultado.Erro)
-                    {
-                        return Json(new JsonModel() { success = false, result = resultado.Resultado, message = resultado.Msg });
-                    }
-
-                    return Json(new JsonModel() { success = true, result = resultado, message = resultado.Msg });
+                    return Json(new JsonModel() { success = false, result = resultado.Resultado, message = resultado.Msg });
                 }
-                catch (Exception ex)
-                {
-                    return Json(new JsonModel() { success = false, message = ex.Message });
-                }
+
+                return Json(new JsonModel() { success = true, result = resultado, message = resultado.Msg });
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                throw new Exception(Ex.Message);
+                return Json(new JsonModel() { success = false, message = ex.Message });
             }
+
         }
 
         [HttpGet]
@@ -203,7 +191,7 @@ namespace ProjetoCinema.Web.Controllers
             {
                 ClientService client = new ClientService();
 
-                DadosFilme resultado = await client.GetAsync<DadosFilme>(_config["UrlApi"] + "/Filme/filme-listar/"
+                DadosFilmeViewModel resultado = await client.GetAsync<DadosFilmeViewModel>(_config["UrlApi"] + "/Filme/filme-listar/"
                     , User.Claims.Where(s => s.Type == "AccessToken").Select(s => s.Value).First(), null);
 
                 return PartialView("_GridFilme", resultado.Resultado);
@@ -219,33 +207,25 @@ namespace ProjetoCinema.Web.Controllers
         {
             try
             {
-                try
+                ClientService client = new ClientService();
+
+                DadosFilmeViewModel resultado = await client.GetAsync<DadosFilmeViewModel>(_config["UrlApi"] + "/Filme/filme-listar/"
+                    , User.Claims.Where(s => s.Type == "AccessToken").Select(s => s.Value).First(), "");
+
+                if (resultado.Erro)
                 {
-                    ClientService client = new ClientService();
-
-                    DadosFilme resultado = await client.GetAsync<DadosFilme>(_config["UrlApi"] + "/Filme/filme-listar/"
-                        , User.Claims.Where(s => s.Type == "AccessToken").Select(s => s.Value).First(), "");
-
-                    if (resultado.Erro)
-                    {
-                        return Json(new JsonModel() { success = false, result = resultado.Resultado, message = resultado.Msg });
-                    }
-
-                    // return Json(new JsonModel() { success = true, result = resultado.Resultado.Select(s => new { s.IdFilme, s.Titulo }), message = resultado.Msg });
-                    return Json(new { success = true, result = resultado.Resultado.Select(s => new { s.IdFilme, s.Titulo }) });
+                    return Json(new JsonModel() { success = false, result = resultado.Resultado, message = resultado.Msg });
                 }
-                catch (Exception ex)
-                {
-                    return Json(new JsonModel() { success = false, message = ex.Message });
-                }
+
+                return Json(new { success = true, result = resultado.Resultado.Select(s => new { s.IdFilme, s.Titulo }) });
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                return Json(new JsonModel() { success = false, message = ex.Message });
             }
         }
 
-        public Filme SalvarImagem(IFormFile upload)
+        public FilmeViewModel SalvarImagem(IFormFile upload)
         {
             try
             {
@@ -253,25 +233,24 @@ namespace ProjetoCinema.Web.Controllers
                 {
                     // Verifica a existencia do diretório
                     if (!Directory.Exists(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images"))))
-                          Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images"));
+                        Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images"));
 
-                    // Nome da imagem que será salva no banco de dados 
-                    //var nomeFoto = upload.FileName;
-                    var nomeFoto = Convert.ToString(Guid.NewGuid() +"_"+ upload.FileName);
+                    // Nome da imagem que será salva no banco de dados
+                    var nomeFoto = Convert.ToString(Guid.NewGuid() + "_" + upload.FileName.Replace(" ", "").Trim());
 
-                    //Recuperando a configuração do arquivo appsettings de ontem será salvo o físico 
+                    // Recuperando a configuração do arquivo appsettings de ontem será salvo o físico 
                     string configuracaoCaminho = _config.GetValue<string>("PathImages");
 
                     // Caminho do diretório 
                     var caminho = Path.Combine(configuracaoCaminho);
                     var caminhoCompleto = Path.Combine(caminho, nomeFoto);
-            
+
                     using (Stream stream = new FileStream(caminhoCompleto, FileMode.Create))
                     {
                         upload.CopyToAsync(stream);
                     }
 
-                    Filme filme = new Filme
+                    FilmeViewModel filme = new FilmeViewModel
                     {
                         Imagem = nomeFoto,
                         Caminho = caminho,

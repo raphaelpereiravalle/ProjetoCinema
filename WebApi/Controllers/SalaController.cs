@@ -2,13 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjetoCinema.ApplicationService.Interface.Service;
 using ProjetoCinema.Domain.Model;
-using System;
 using System.Threading.Tasks;
 
 namespace ProjetoCinema.WebApi.Controllers
 {
     [Authorize("Bearer")]
-    //[AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class SalaController : ControllerBase

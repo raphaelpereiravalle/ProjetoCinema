@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace ProjetoCinema.Domain.Model
 {
@@ -20,22 +19,16 @@ namespace ProjetoCinema.Domain.Model
 
     public class Sala
     {
-        [Key]
-        [StringLength(450)]
         public string IdSala { get; set; }
         
-        [Display(Name = "Nome")]
-        [StringLength(150)]
         public string Nome { get; set; }
         
-        [Display(Name = "Quantidade de assento")]
         public int QuantidadeAssento { get; set; }
        
         public DateTime DataRegistro { get; set; }
         
         public bool Ativo { get; set; }
 
-        [StringLength(450)]
         public string IdUsuario { get; set; }
     }
 }

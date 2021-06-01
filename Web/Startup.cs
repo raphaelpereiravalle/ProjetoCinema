@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -7,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using ProjetoCinema.Domain.Model;
+using ProjetoCinema.Web.ViewModel;
 using System;
 
 namespace Web
@@ -51,6 +54,28 @@ namespace Web
             services.AddMvc();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
+
+           // var config = new AutoMapper.MapperConfiguration(cfg =>
+          //  {
+               // cfg.CreateMap<FilmeViewModel, Filme>();
+               // cfg.CreateMap<Filme, FilmeViewModel>();
+
+            //    cfg.CreateMap<SalaViewModel, Sala>();
+           //     cfg.CreateMap<Sala, SalaViewModel>();
+
+             //   cfg.CreateMap<SessaoViewModel, Sessao>();
+           //     cfg.CreateMap<Sessao, SessaoViewModel>();
+
+           //     cfg.CreateMap<HomeViewModel, Home>();
+          //      cfg.CreateMap<Home, HomeViewModel>();
+
+           //     cfg.CreateMap<NotificacaoViewModel, Notificacao>();
+           //     cfg.CreateMap<Notificacao, NotificacaoViewModel>();
+          //  });
+
+            //IMapper mapper = config.CreateMapper();
+          //  services.AddSingleton(mapper);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

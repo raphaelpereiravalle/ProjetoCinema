@@ -118,7 +118,7 @@ namespace ProjetoCinema.WebApi.Controllers
 
                 return resultado;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }

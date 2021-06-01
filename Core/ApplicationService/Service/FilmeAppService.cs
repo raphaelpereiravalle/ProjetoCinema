@@ -16,6 +16,13 @@ namespace ProjetoCinema.ApplicationService.Service
 
         public Task<Notificacao> IncluirFilme(Filme filme)
         {
+            // Query para verificar se o filme já foi cadastrado
+            var verificar = _filmeRepository.BuscarFilmePorTitulo(filme.Titulo);
+
+            if (verificar.Result.Erro)
+            {
+                return verificar;
+            }
             return _filmeRepository.IncluirFilme(filme);
         }
 
@@ -24,8 +31,7 @@ namespace ProjetoCinema.ApplicationService.Service
             return _filmeRepository.ListarFilme();
         }
 
-        public Task<Filme> BuscarFilme(string idFilme) 
-        
+        public Task<Filme> BuscarFilme(string idFilme)
         {
             return _filmeRepository.BuscarFilme(idFilme);
         }
@@ -37,6 +43,20 @@ namespace ProjetoCinema.ApplicationService.Service
 
         public Task<Notificacao> ExcluirFilme(string idFilme)
         {
+            //Verificar existencia de filme com sessão
+            var verificar = _filmeRepository.BuscarFilmeSessaoId(idFilme);
+
+            if (verificar.Result.Erro)
+            {
+                return verificar;
+            }
+
+            // Buscar caminho da imagem
+            Task<Filme> verificarImagem = _filmeRepository.BuscarImagemCaminho(idFilme);
+
+            // Excluir imagem do filme no diretorio físico 
+            _filmeRepository.ExcluirImagem(verificarImagem.Result.Caminho, verificarImagem.Result.Imagem);
+
             return _filmeRepository.ExcluirFilme(idFilme);
         }
 

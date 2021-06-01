@@ -21,8 +21,6 @@ namespace Infrastructure.Tests.Repository
         {
             _repositoryMock = new Mock<IFilmeRepository>();
             _filmeMock = new Mock<Filme>();
-            _service = new FilmeAppService(_repositoryMock.Object);
-
             _serviceMock = new Mock<IFilmeAppService>();
         }
 
@@ -102,6 +100,32 @@ namespace Infrastructure.Tests.Repository
             _serviceMock.Verify(x => x.BuscarFilme("537C608E-DD65-4839-ACD8-C7D5190FDED5"), Times.Once);
 
             // Assert
+            var objResult = Assert.IsType<NotFoundResult>(result);
+            Assert.Equal(200, objResult.StatusCode);
+        }
+
+        [Fact]
+        public void BuscarFilmePorTitulo()
+        {
+            _repositoryMock.Setup(_ => _.BuscarFilmePorTitulo("Bela Vingança"));
+
+            var result = _repositoryMock.Setup(_ => _.BuscarFilmePorTitulo("Bela Vingança"));
+
+            _repositoryMock.Verify(x => x.BuscarFilmePorTitulo("Bela Vingança"), Times.Once);
+
+            var objResult = Assert.IsType<NotFoundResult>(result);
+            Assert.Equal(200, objResult.StatusCode);
+        }
+
+        [Fact]
+        public void BuscarFilmeSessaoId_returno200()
+        {
+            _repositoryMock.Setup(_ => _.BuscarFilmeSessaoId("4ac4219e-6a88-4045-8627-c482b1c664fd"));
+
+            var result = _repositoryMock.Setup(_ => _.BuscarFilmeSessaoId("4ac4219e-6a88-4045-8627-c482b1c664fd"));
+
+            _repositoryMock.Verify(x => x.BuscarFilmeSessaoId("4ac4219e-6a88-4045-8627-c482b1c664fd"), Times.Once);
+
             var objResult = Assert.IsType<NotFoundResult>(result);
             Assert.Equal(200, objResult.StatusCode);
         }

@@ -5,7 +5,6 @@ using ProjetoCinema.ApplicationService.Interface.Repository;
 using ProjetoCinema.Domain.Model;
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ProjetoCinema.Infrastructure
@@ -25,26 +24,13 @@ namespace ProjetoCinema.Infrastructure
             {
                 try
                 {
-                    // Query para verificar se o filme já foi cadastrado
-                    string queryVerificar = $@"SELECT UPPER(Titulo) AS Titulo
-                                                FROM tb_filme 
-                                                WHERE Titulo like UPPER('%{filme.Titulo}%')";
+                    conexao.Open();
 
-                    var verificar = conexao.Query<Filme>(queryVerificar, new
+                    using (var trans = conexao.BeginTransaction())
                     {
-                        Titulo = filme.Titulo
-
-                    }).SingleOrDefault();
-
-                    if (verificar == null)
-                    {
-                        conexao.Open();
-
-                        using (var trans = conexao.BeginTransaction())
+                        try
                         {
-                            try
-                            {
-                                string query = @$"INSERT INTO tb_filme
+                            string query = @$"INSERT INTO tb_filme
                                                (IdFilme,
                                                 Titulo,
                                                 Descricao,
@@ -67,33 +53,28 @@ namespace ProjetoCinema.Infrastructure
                                                 @IdUsuario
 		                                      )";
 
-                                await conexao.ExecuteAsync(query, new
-                                {
-                                    IdFilme = Guid.NewGuid().ToString(),
-                                    Titulo = filme.Titulo,
-                                    Descricao = filme.Descricao,
-                                    Imagem = filme.Imagem,
-                                    Caminho = filme.Caminho,
-                                    Duracao = filme.Duracao,
-                                    DataRegistro = DateTime.Now,
-                                    Ativo = true,
-                                    IdUsuario = filme.IdUsuario
-                                }, transaction: trans);
-
-                                trans.Commit();
-
-                                return new Notificacao(false, "Cadastro realizado com sucesso!", "");
-                            }
-                            catch (Exception)
+                            await conexao.ExecuteAsync(query, new
                             {
-                                trans.Rollback();
-                                throw;
-                            }
+                                IdFilme = Guid.NewGuid().ToString(),
+                                Titulo = filme.Titulo,
+                                Descricao = filme.Descricao,
+                                Imagem = filme.Imagem,
+                                Caminho = filme.Caminho,
+                                Duracao = filme.Duracao,
+                                DataRegistro = DateTime.Now,
+                                Ativo = true,
+                                IdUsuario = filme.IdUsuario
+                            }, transaction: trans);
+
+                            trans.Commit();
+
+                            return new Notificacao(false, "Cadastro realizado com sucesso!", "");
                         }
-                    }
-                    else
-                    {
-                        return new Notificacao(true, "Filme já cadastrada.", "");
+                        catch (Exception)
+                        {
+                            trans.Rollback();
+                            throw;
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -136,7 +117,7 @@ namespace ProjetoCinema.Infrastructure
                 using (var conexao = new SqlConnection(_config))
                 {
                     string query = @$"SELECT
-                                    IdFilme
+                                     IdFilme
                                     ,Titulo
                                     ,Descricao
                                     ,Imagem
@@ -145,8 +126,8 @@ namespace ProjetoCinema.Infrastructure
                                     ,DataRegistro
                                     ,Ativo
                                     ,IdUsuario
-                                  FROM tb_filme
-                                  where IdFilme='{idFilme}'";
+                                   FROM tb_filme
+                                   WHERE IdFilme='{idFilme}'";
 
                     return await conexao.QueryFirstAsync<Filme>(string.Format(query));
                 }
@@ -157,11 +138,62 @@ namespace ProjetoCinema.Infrastructure
             }
         }
 
+        public async Task<Notificacao> BuscarFilmePorTitulo(string titulo)
+        {
+            try
+            {
+                using (var conexao = new SqlConnection(_config))
+                {
+                    string queryVerificar = $@"SELECT IdFilme
+                                               FROM tb_filme 
+                                               WHERE Titulo = '{titulo}'";
+
+                    string verificar = await conexao.QueryFirstOrDefaultAsync<string>(string.Format(queryVerificar));
+
+                    if (string.IsNullOrEmpty(verificar))
+                    {
+                        return new Notificacao(false, null, null);
+                    }
+
+                    return new Notificacao(true, "Filme já cadastrado!", null);
+                }
+            }
+            catch (Exception ex)
+            {
+                return new Notificacao(true, "Não foi possível localizar o titulo!", ex.Message);
+            }
+        }
+
+        public async Task<Notificacao> BuscarFilmeSessaoId(string idFilme)
+        {
+            try
+            {
+                using (var conexao = new SqlConnection(_config))
+                {
+                    string queryVerificar = $@"SELECT IdFilme
+                                               FROM tb_sessao_filme 
+                                               WHERE IdFilme = '{idFilme}'";
+
+                    string verificar = await conexao.QueryFirstOrDefaultAsync<string>(string.Format(queryVerificar));
+
+                    if (string.IsNullOrEmpty(verificar))
+                    {
+                        return new Notificacao(false, null, null);
+                    }
+
+                    return new Notificacao(true, "O Filme não pode se excluir pois existem sessão vinculadas a ele!", null);
+                }
+            }
+            catch (Exception ex)
+            {
+                return new Notificacao(true, "Não foi possível localizar o titulo!", ex.Message);
+            }
+        }
+
         public async Task<Notificacao> EditarFilme(Filme filme)
         {
             using (var conexao = new SqlConnection(_config))
             {
-
                 try
                 {
                     conexao.Open();
@@ -170,33 +202,16 @@ namespace ProjetoCinema.Infrastructure
                     {
                         try
                         {
-                            // Retornar imagem e o caminho
-                            string queryImagem = @$"SELECT Caminho, Imagem 
-                                                FROM tb_filme 
-                                                WHERE IdFilme = '{filme.IdFilme}'";
-
-                            var verificarImagem = conexao.Query<Filme>(queryImagem, transaction: trans).SingleOrDefault();
-
-                            if (verificarImagem.Imagem != filme.Imagem)
-                            {
-                                // Deletar imagem do filme
-                                excluirImagem(verificarImagem.Caminho, verificarImagem.Imagem);
-                            }
-                            else
-                            {
-                                filme.Imagem = verificarImagem.Imagem;
-                            }
-
                             string query = @$"UPDATE tb_filme
-                                   SET
-                                      Titulo = @Titulo
-                                      ,Descricao = @Descricao
-                                      ,Imagem = @Imagem
-                                      ,Duracao = @Duracao
-                                      ,DataRegistro = @DataRegistro
-                                      ,Ativo = @Ativo
-                                      ,IdUsuario = @IdUsuario
-                                  WHERE IdFilme = @IdFilme";
+                                           SET
+                                               Titulo = @Titulo
+                                              ,Descricao = @Descricao
+                                              ,Imagem = @Imagem
+                                              ,Duracao = @Duracao
+                                              ,DataRegistro = @DataRegistro
+                                              ,Ativo = @Ativo
+                                              ,IdUsuario = @IdUsuario
+                                           WHERE IdFilme = @IdFilme";
 
                             await conexao.ExecuteAsync(query, new
                             {
@@ -204,7 +219,6 @@ namespace ProjetoCinema.Infrastructure
                                 Titulo = filme.Titulo,
                                 Descricao = filme.Descricao,
                                 Imagem = filme.Imagem,
-                                Caminho = filme.Caminho,
                                 Duracao = filme.Duracao,
                                 DataRegistro = DateTime.Now,
                                 Ativo = true,
@@ -235,39 +249,12 @@ namespace ProjetoCinema.Infrastructure
             {
                 try
                 {
-                    // Query para verificar a existem de filme vinculadas com alguma sessão
-                    string queryVerificar = $@"SELECT IdFilme
-                                               FROM tb_sessao_filme 
-                                               WHERE IdFilme = '{idFilme}'";
+                    // Deletar filme
+                    string query = @$"DELETE FROM tb_filme WHERE IdFilme = '{idFilme}'";
 
-                    string verificar = conexao.Query<string>(string.Format(queryVerificar)).SingleOrDefault();
+                    await conexao.ExecuteAsync(string.Format(query));
 
-                    if (string.IsNullOrEmpty(verificar))
-                    {
-                        // Retornar imagem e o caminho
-                        string queryImagem = @$"SELECT Caminho, Imagem 
-                                                FROM tb_filme 
-                                                WHERE IdFilme = '{idFilme}'";
-
-                        var verificarImagem = conexao.Query<Filme>(queryImagem).SingleOrDefault();
-
-                        if (!string.IsNullOrEmpty(verificarImagem.Caminho))
-                        {
-                            // Deletar imagem do filme
-                            excluirImagem(verificarImagem.Caminho, verificarImagem.Imagem);
-                        }
-
-                        // Deletar filme
-                        string query = @$"DELETE FROM tb_filme WHERE IdFilme = '{idFilme}'";
-
-                        await conexao.ExecuteAsync(string.Format(query));
-
-                        return new Notificacao(false, "Filme deletada com sucesso!", "");
-                    }
-                    else
-                    {
-                        return new Notificacao(true, "O Filme não pode excluir pois existem sessão vinculadas a ele.", "");
-                    }
+                    return new Notificacao(false, "Filme deletada com sucesso!", "");
                 }
                 catch (Exception ex)
                 {
@@ -276,7 +263,7 @@ namespace ProjetoCinema.Infrastructure
             }
         }
 
-        private void excluirImagem(string caminho, string arquivo)
+        public void ExcluirImagem(string caminho, string arquivo)
         {
             var caminhoCompleta = Path.Combine("C:\\Projetos\\dev\\.NET\\ProjetoCinema\\Web\\", caminho, arquivo);
 
@@ -298,9 +285,31 @@ namespace ProjetoCinema.Infrastructure
         {
             using (var conexao = new SqlConnection(_config))
             {
-                string query = @$"SELECT COUNT(IdFilme) totalFilmes FROM tb_filme";
+                string query = @"SELECT COUNT(IdFilme) totalFilmes 
+                                 FROM tb_filme";
 
                 return await conexao.QueryFirstAsync<int>(string.Format(query));
+            }
+        }
+
+        // Busca o caminha da imagem
+        public async Task<Filme> BuscarImagemCaminho(string idFilme)
+        {
+            try
+            {
+                using (var conexao = new SqlConnection(_config))
+                {
+                    // Retornar imagem e o caminho
+                    string queryImagem = $@"SELECT Caminho, Imagem
+                                            FROM tb_filme
+                                            WHERE IdFilme = '{idFilme}'";
+
+                    return await conexao.QueryFirstOrDefaultAsync<Filme>(queryImagem);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
     }

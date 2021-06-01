@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-
-namespace ProjetoCinema.Domain.Model
+﻿namespace ProjetoCinema.Domain.Model
 {
     public class Home
     {

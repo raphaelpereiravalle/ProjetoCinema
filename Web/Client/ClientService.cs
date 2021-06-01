@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
-using ProjetoCinema.Domain.Model;
 using ProjetoCinema.Domain.Token.Model;
+using ProjetoCinema.Web.ViewModel;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -14,7 +14,7 @@ namespace ProjetoCinema.Web.Client
         {
         }
 
-        public async Task<Notificacao> PostAsync<T>(string url, string token, T item)
+        public async Task<NotificacaoViewModel> PostAsync<T>(string url, string token, T item)
         {
             var client = new HttpClient();
             var myContent = JsonConvert.SerializeObject(item);
@@ -37,13 +37,13 @@ namespace ProjetoCinema.Web.Client
             string conteudo = response.Content.ReadAsStringAsync().Result;
             if (response.IsSuccessStatusCode)
             {
-                Notificacao resultado = JsonConvert.DeserializeObject<Notificacao>(conteudo);
+                NotificacaoViewModel resultado = JsonConvert.DeserializeObject<NotificacaoViewModel>(conteudo);
                 return resultado;
             }
             throw new Exception(response.ReasonPhrase);
         }
 
-        public async Task<Notificacao> PutAsync<T>(string url, string token, T item)
+        public async Task<NotificacaoViewModel> PutAsync<T>(string url, string token, T item)
         {
             var client = new HttpClient();
             var myContent = JsonConvert.SerializeObject(item);
@@ -66,7 +66,7 @@ namespace ProjetoCinema.Web.Client
             string conteudo = response.Content.ReadAsStringAsync().Result;
             if (response.IsSuccessStatusCode)
             {
-                Notificacao resultado = JsonConvert.DeserializeObject<Notificacao>(conteudo);
+                NotificacaoViewModel resultado = JsonConvert.DeserializeObject<NotificacaoViewModel>(conteudo);
                 return resultado;
             }
             throw new Exception(response.ReasonPhrase);

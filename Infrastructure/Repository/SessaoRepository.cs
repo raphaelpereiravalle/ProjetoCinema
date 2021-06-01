@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using ProjetoCinema.ApplicationService.Interface.Repository;
 using ProjetoCinema.Domain.Model;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ProjetoCinema.Infrastructure
@@ -26,69 +25,53 @@ namespace ProjetoCinema.Infrastructure
                 {
                     conexao.Open();
 
-                    string queryVerificarExisteSalaSessao = $@"SELECT 
-                                                            sa.IdSala
-                                                            FROM tb_sessao_filme AS sf
-                                                            INNER JOIN tb_sessao as s ON s.IdSessao = sf.IdSessao
-                                                            INNER JOIN tb_filme AS f ON sf.IdFilme = f.IdFilme
-                                                            INNER JOIN tb_sala AS sa ON sa.IdSala = sf.IdSala 
-                                                            WHERE sa.IdSala = '{sessao.IdSala}'
-                                                            AND HoraInicioSessao = '{sessao.HoraInicioSessao}'";
-
-                    string verificarExisteSalaSessao = conexao.Query<string>(string.Format(queryVerificarExisteSalaSessao)).SingleOrDefault();
-
-                    // Valização para não ocorreção duplicada na mesma sala
-                    if (string.IsNullOrEmpty(verificarExisteSalaSessao))
+                    using (var trans = conexao.BeginTransaction())
                     {
-                        string HoraFimSessao = calculadoHoraFinal(sessao.HoraInicioSessao, sessao.IdFilme);
-
-                        using (var trans = conexao.BeginTransaction())
+                        try
                         {
-                            try
+                            string query = @"INSERT INTO tb_sessao
+                                                   (IdSessao,
+                                                    DataSessao,
+                                                    HoraInicioSessao,
+                                                    HoraFimSessao,
+                                                    ValorIngresso,
+                                                    TipoAnimacao,
+                                                    TipoAudio,
+                                                    DataRegistro,
+                                                    Ativo,
+                                                    IdUsuario)
+                                               VALUES
+                                                   (@IdSessao,
+                                                    @DataSessao,
+                                                    @HoraInicioSessao,
+                                                    @HoraFimSessao,
+                                                    @ValorIngresso,
+                                                    @TipoAnimacao,
+                                                    @TipoAudio,
+                                                    @DataRegistro,
+                                                    @Ativo,
+                                                    @IdUsuario)";
+
+                            Guid guid = Guid.NewGuid();
+
+                            await conexao.ExecuteAsync(query, new
                             {
-                                string query = @"INSERT INTO tb_sessao
-                                       (IdSessao,
-                                        DataSessao,
-                                        HoraInicioSessao,
-                                        HoraFimSessao,
-                                        ValorIngresso,
-                                        TipoAnimacao,
-                                        TipoAudio,
-                                        DataRegistro,
-                                        Ativo,
-                                        IdUsuario)
-                                 VALUES
-                                       (@IdSessao,
-                                        @DataSessao,
-                                        @HoraInicioSessao,
-                                        @HoraFimSessao,
-                                        @ValorIngresso,
-                                        @TipoAnimacao,
-                                        @TipoAudio,
-                                        @DataRegistro,
-                                        @Ativo,
-                                        @IdUsuario)";
+                                IdSessao = guid.ToString(),
+                                DataSessao = sessao.DataSessao,
+                                HoraInicioSessao = sessao.HoraInicioSessao,
+                                HoraFimSessao = sessao.HoraFimSessao,
+                                ValorIngresso = sessao.ValorIngresso,
+                                TipoAnimacao = sessao.TipoAnimacao,
+                                TipoAudio = sessao.TipoAudio,
+                                DataRegistro = DateTime.Now,
+                                Ativo = true,
+                                IdUsuario = sessao.IdUsuario,
+                            }, transaction: trans);
 
-                                Guid guid = Guid.NewGuid();
+                            //--------------------------
 
-                                await conexao.ExecuteAsync(query, new
-                                {
-                                    IdSessao = guid.ToString(),
-                                    DataSessao = sessao.DataSessao,
-                                    HoraInicioSessao = sessao.HoraInicioSessao,
-                                    HoraFimSessao = HoraFimSessao,
-                                    ValorIngresso = sessao.ValorIngresso,
-                                    TipoAnimacao = sessao.TipoAnimacao,
-                                    TipoAudio = sessao.TipoAudio,
-                                    DataRegistro = DateTime.Now,
-                                    Ativo = true,
-                                    IdUsuario = sessao.IdUsuario,
-                                }, transaction: trans);
-
-                                //--------------------------
-
-                                //Filme
-                                string query2 = @"INSERT INTO tb_sessao_filme
+                            //Filme
+                            string query2 = @"INSERT INTO tb_sessao_filme
                                                 (IdFilmeSessao,
                                                  IdFilme,
                                                  IdSala,
@@ -99,29 +82,24 @@ namespace ProjetoCinema.Infrastructure
                                                  @IdSala,
                                                  @IdSessao)";
 
-                                Guid guid2 = Guid.NewGuid();
-                                await conexao.ExecuteAsync(query2, new
-                                {
-                                    IdFilmeSessao = guid2.ToString(),
-                                    IdFilme = sessao.IdFilme,
-                                    IdSala = sessao.IdSala,
-                                    IdSessao = guid.ToString()
-                                }, transaction: trans);
-
-                                trans.Commit();
-
-                                return new Notificacao(false, "Cadastro realizado com sucesso!", "");
-                            }
-                            catch (Exception)
+                            Guid guid2 = Guid.NewGuid();
+                            await conexao.ExecuteAsync(query2, new
                             {
-                                trans.Rollback();
-                                throw;
-                            }
+                                IdFilmeSessao = guid2.ToString(),
+                                IdFilme = sessao.IdFilme,
+                                IdSala = sessao.IdSala,
+                                IdSessao = guid.ToString()
+                            }, transaction: trans);
+
+                            trans.Commit();
+
+                            return new Notificacao(false, "Cadastro realizado com sucesso!", "");
                         }
-                    }
-                    else
-                    {
-                        return new Notificacao(true, "Já existe sessão cadastrada para essa sala!", "");
+                        catch (Exception)
+                        {
+                            trans.Rollback();
+                            throw;
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -194,7 +172,7 @@ namespace ProjetoCinema.Infrastructure
                                     INNER JOIN tb_filme AS f ON (f.IdFilme  = sf.IdFilme)
                                     INNER JOIN tb_sessao AS ss ON (ss.IdSessao = sf.IdSessao)
                                     INNER JOIN tb_sala AS s ON (s.IdSala = sf.IdSala)
-                                    WHERE ss.IdSessao='{@idSessao}'";
+                                    WHERE ss.IdSessao='{idSessao}'";
 
                     return await conexao.QueryFirstAsync<Sessao>(string.Format(query));
                 }
@@ -202,6 +180,37 @@ namespace ProjetoCinema.Infrastructure
                 {
                     return null;
                 }
+            }
+        }
+
+        public async Task<Notificacao> VerificarExisteSalaSessao(string IdSala, string HoraInicioSessao)
+        {
+            try
+            {
+                using (var conexao = new SqlConnection(_config))
+                {
+                    string queryVerificarExisteSalaSessao = $@"SELECT 
+                                                            sa.IdSala
+                                                            FROM tb_sessao_filme AS sf
+                                                            INNER JOIN tb_sessao as s ON s.IdSessao = sf.IdSessao
+                                                            INNER JOIN tb_filme AS f ON sf.IdFilme = f.IdFilme
+                                                            INNER JOIN tb_sala AS sa ON sa.IdSala = sf.IdSala 
+                                                            WHERE sa.IdSala = '{IdSala}'
+                                                            AND HoraInicioSessao = '{HoraInicioSessao}'";
+
+                    string verificar = await conexao.QueryFirstOrDefaultAsync<string>(string.Format(queryVerificarExisteSalaSessao));
+
+                    if (string.IsNullOrEmpty(verificar))
+                    {
+                        return new Notificacao(false, null, null);
+                    }
+
+                    return new Notificacao(true, "Já existe sessão cadastrada para essa sala!", null);
+                }
+            }
+            catch (Exception ex)
+            {
+                return new Notificacao(true, "Não foi possível inserir a sessão!", ex.Message);
             }
         }
 
@@ -217,10 +226,8 @@ namespace ProjetoCinema.Infrastructure
                     {
                         try
                         {
-                            string HoraFimSessao = calculadoHoraFinal(sessao.HoraInicioSessao, sessao.IdFilme);
-
                             string query = @"UPDATE tb_sessao
-                                                  SET 
+                                                  SET
                                                     DataSessao = @DataSessao,
                                                     HoraInicioSessao = @HoraInicioSessao,
                                                     HoraFimSessao = @HoraFimSessao,
@@ -237,7 +244,7 @@ namespace ProjetoCinema.Infrastructure
                                 IdSessao = sessao.IdSessao.ToString(),
                                 DataSessao = sessao.DataSessao,
                                 HoraInicioSessao = sessao.HoraInicioSessao,
-                                HoraFimSessao = HoraFimSessao,
+                                HoraFimSessao = sessao.HoraFimSessao,
                                 ValorIngresso = sessao.ValorIngresso,
                                 TipoAnimacao = sessao.TipoAnimacao,
                                 TipoAudio = sessao.TipoAudio,
@@ -270,30 +277,16 @@ namespace ProjetoCinema.Infrastructure
             {
                 try
                 {
-                    // Retornar imagem e o caminho
-                    string queryImagem = @$"SELECT DATEDIFF(DAY, CONVERT(DATE, GETDATE()), DataSessao)
-                                                FROM tb_sessao
-                                                WHERE IdSessao = '{idSessao}'";
+                    // Excluir relacionamento
+                    string query1 = $"DELETE FROM tb_sessao_filme WHERE idSessao='{idSessao}'";
 
-                    var verificarSessao = conexao.Query<int>(queryImagem).SingleOrDefault();
+                    await conexao.ExecuteAsync(string.Format(query1));
 
-                    if (verificarSessao >= 10)
-                    {
-                        // Excluir relacionamento
-                        string query1 = $"DELETE FROM tb_sessao_filme WHERE idSessao='{idSessao}'";
+                    string query2 = $"DELETE FROM tb_sessao WHERE idSessao='{idSessao}'";
 
-                        await conexao.ExecuteAsync(string.Format(query1));
+                    await conexao.ExecuteAsync(string.Format(query2));
 
-                        string query2 = $"DELETE FROM tb_sessao WHERE idSessao='{idSessao}'";
-
-                        await conexao.ExecuteAsync(string.Format(query2));
-
-                        return new Notificacao(false, "Sessão deletada com sucesso!", "");
-                    }
-                    else
-                    {
-                        return new Notificacao(true, "A sessão não pode ser excluir poís faltam 10 dias ou mais para que ela ocorra...", "");
-                    }
+                    return new Notificacao(false, "Sessão deletada com sucesso!", null);
                 }
                 catch (Exception ex)
                 {
@@ -303,20 +296,22 @@ namespace ProjetoCinema.Infrastructure
         }
 
         // Calcular horário final do filme
-        private string calculadoHoraFinal(string horarioInicio, string idFilme)
+        public string CalculadoHoraFinal(string idFilme, string horarioInicio)
         {
             using (var conexao = new SqlConnection(_config))
             {
-                // Retornar duração
-                string queryImagem = @$"SELECT Duracao 
+                // Retorna a duração do filme
+                string queryDuracao = @$"SELECT Duracao 
                                         FROM tb_filme 
                                         WHERE IdFilme = '{idFilme}'";
 
-                var duracao = conexao.Query<Filme>(queryImagem).SingleOrDefault();
+                Filme duracao = new Filme();
+
+                var Duracao = conexao.QueryFirst<string>(string.Format(queryDuracao));
 
                 TimeSpan _horarioInicio = TimeSpan.Parse(horarioInicio);
 
-                TimeSpan _duracaoFilme = TimeSpan.Parse(duracao.Duracao);
+                TimeSpan _duracaoFilme = TimeSpan.Parse(Duracao);
 
                 string horaFinal = _duracaoFilme.Add(_horarioInicio).ToString(@"hh\:mm");
 
@@ -329,11 +324,24 @@ namespace ProjetoCinema.Infrastructure
         {
             using (var conexao = new SqlConnection(_config))
             {
-                string query = @"SELECT 
-                                CONVERT(DEC(10, 2), AVG(ValorIngresso)) AS mediaValorIngresso
-                                FROM tb_sessao";
+                string query = @"SELECT CONVERT(DEC(10, 2), AVG(ValorIngresso)) AS mediaValorIngresso
+                                 FROM tb_sessao";
 
-                return await conexao.QueryFirstAsync<double>(string.Format(query));
+                return await conexao.QueryFirstOrDefaultAsync<double>(string.Format(query));
+            }
+        }
+
+        // Calcular prazo para a exclusão da sessão
+        public int CalcularPrazoParaExcluirSessao(string idSessao)
+        {
+            using (var conexao = new SqlConnection(_config))
+            {
+                // Retornar 
+                string query = @$"SELECT DATEDIFF(DAY, CONVERT(DATE, GETDATE()), DataSessao)
+                                  FROM tb_sessao
+                                  WHERE IdSessao = '{idSessao}'";
+
+                return conexao.QueryFirst<int>(string.Format(query));
             }
         }
     }

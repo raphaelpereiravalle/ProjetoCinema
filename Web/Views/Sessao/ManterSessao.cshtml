@@ -1,4 +1,4 @@
-﻿@model ProjetoCinema.Domain.Model.Sessao
+﻿@model ProjetoCinema.Web.ViewModel.SessaoViewModel
 @{
     ViewData["Title"] = Model.IdSessao == null ? "Cadastrar Sessão" : "Editar Sessão";
     ViewData["IdSessao"] = Model.IdSessao == null ? "null" : string.Format("'{0}'", @Model.IdSessao.ToString());
